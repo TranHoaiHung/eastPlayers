@@ -1,10 +1,15 @@
 import * as React from 'react';
-import { View, Image, TouchableOpacity, Dimensions, Text, ScrollView, StyleSheet } from 'react-native';
+import { View, Image, TouchableOpacity, Dimensions, Text, ScrollView } from 'react-native';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { cStyles, DeviceUtils } from '../Utils';
 import { IconBack, Star, IconLove, IconUnLove, IconBackRight, IconSizeProduct, IconClose, IconAdd, IconMinus, ButtonBuyCart } from "../SVG";
 import { TextMask } from 'react-native-masked-text';
 import Modal from 'react-native-modal';
+import EStyleSheet from 'react-native-extended-stylesheet';
+
+const entireScreenWidth = Dimensions.get('window').width;
+EStyleSheet.build({$rem: entireScreenWidth / 380});
+
 
 const infoProductTemple = {
     discount: 10,
@@ -105,6 +110,9 @@ export const ImageDetailProduct = (props) => {
             <View style={styles.viewPag}>
                 <Text style={styles.textPag}>{`${activeImageIndex}/${data.length}`}</Text>
             </View>
+            <TouchableOpacity style={styles.buttonBack} activeOpacity={.7}>
+                <IconBack size={cStyles.size14}/>
+            </TouchableOpacity>
         </View>
     )
 }
@@ -133,7 +141,7 @@ export const Rating = (props) => {
             {
                 data.map((item, index) => {
                     if (index < numberRating) {
-                        return <Star size={14} />
+                        return <Star size={cStyles.size14} />
                     }
                     return null
                 })
@@ -148,7 +156,7 @@ export const ButtonFavorite = (props) => {
     if (isFavorite) {
         return (
             <TouchableOpacity style={[styles.buttonFavorite, props?.styles]}>
-                <IconLove size={20} />
+                <IconLove size={cStyles.size20} />
             </TouchableOpacity>
         )
     }
@@ -157,7 +165,7 @@ export const ButtonFavorite = (props) => {
         <TouchableOpacity style={[{
             ...cStyles.center
         }, props?.styles]}>
-            <IconUnLove size={20} />
+            <IconUnLove size={cStyles.size20} />
         </TouchableOpacity>
     )
 }
@@ -170,7 +178,6 @@ export const DetailItemVariant = (props) => {
             <View style={styles.containerItemVariant}>
                 {
                     dataVariant.map((item, index) => {
-                        console.log(item)
                         var font = { ...cStyles.fontInterRegular_14, color: item?.isSoldOut && "#4E5369" || "#3A3F55" }
                         if (listVariantChoose.includes(item)) {
                             font = {
@@ -183,7 +190,7 @@ export const DetailItemVariant = (props) => {
                             
                                 borderWidth: 1,
                                 paddingHorizontal: 16,
-                                paddingVertical:9,
+                                paddingVertical: 9,
                                 borderColor: item?.isSoldOut && "#D3D3E1" || listVariantChoose.includes(item) && "#0F172A" || "#D3D3E1",
                                 marginLeft: index != 0 && 8 || 0,
 
@@ -230,7 +237,7 @@ const ProductDetailScreen = () => {
         if (!listChooseColor.includes(item)) {
             setListChooseColor([...listChooseColor, item])
         } else {
-            if (listChooseColor.length > 1) {
+            if (listChooseColor.length > 0) {
                 var temp = listChooseColor.filter((value) => { return value?._id != item?._id });
                 setListChooseColor([...temp])
             }
@@ -241,7 +248,7 @@ const ProductDetailScreen = () => {
         if (!listChooseSize.includes(item)) {
             setListChooseSize([...listChooseSize, item])
         } else {
-            if (listChooseSize.length > 1) {
+            if (listChooseSize.length > 0) {
                 var temp = listChooseSize.filter((value) => { return value?._id != item?._id });
                 setListChooseSize([...temp])
             }
@@ -288,9 +295,9 @@ const ProductDetailScreen = () => {
                 <View style={{ flexDirection: "row" }}>
                     <View style={styles.viewRating}>
                         <Rating numberRating={infoProduct.rating} />
-                        <Text style={{ ...cStyles.fontInterRegular_12, color: "#6C728B", paddingLeft: 8, paddingRight: 4 }}>{`${infoProduct.numberRating}`}</Text>
-                        <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: "#6C728B", opacity: .6 }} />
-                        <Text style={{ ...cStyles.fontInterRegular_12, color: "#6C728B", paddingLeft: 4, paddingRight: 8 }}>{` Đã bán ${infoProduct.sold}`}</Text>
+                        <Text style={styles.textRating1}>{`${infoProduct.numberRating}`}</Text>
+                        <View style={styles.dot} />
+                        <Text style={styles.textSold}>{` Đã bán ${infoProduct.sold}`}</Text>
                     </View>
                     <ButtonFavorite isFavorite={infoProduct.isFavorite} style={{
                         // position:"absolute",
@@ -303,7 +310,7 @@ const ProductDetailScreen = () => {
 
     const renderLine = (height) => {
         return (
-            <View style={{ width: width, height: height || 1, backgroundColor: "#EEEDF5" }} />
+            <View style={{ width: width, height: height ||1, backgroundColor: "#EEEDF5" }} />
         )
     }
 
@@ -315,10 +322,10 @@ const ProductDetailScreen = () => {
             >
                 <View style={styles.buttonVariant}>
                     <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
-                        <IconSizeProduct size={21} />
+                        <IconSizeProduct size={cStyles.size21} />
                         <Text style={styles.textTitleButtonVariant}>{"Màu, Kích thước"}</Text>
                     </View>
-                    <IconBackRight size={9} />
+                    <IconBackRight size={cStyles.size9} />
                 </View>
             </TouchableOpacity>
         )
@@ -350,10 +357,10 @@ const ProductDetailScreen = () => {
                     <View style={styles.viewTextHeaderModal}>
                         <Text style={{ ...cStyles.fontInterBold_16, color: "#0F172A", flex: 1 }}>{"Chọn phân loại"}</Text>
                         <TouchableOpacity activeOpacity={.7} onPress={onCloseModal} style={styles.buttonCloseModal}>
-                            <IconClose size={11} />
+                            <IconClose size={cStyles.size11} />
                         </TouchableOpacity>
                     </View>
-                    {renderLine(1)}
+                    {renderLine( width > 375 ? 1.5 : 1)}
                     {/*render Content*/}
                     <View style={styles.viewItemVariant}>
                         <DetailItemVariant
@@ -383,7 +390,7 @@ const ProductDetailScreen = () => {
                                     activeOpacity={.7}
                                     onPress={() => { onPressQuantity("minus") }}
                                 >
-                                    <IconMinus size={14} />
+                                    <IconMinus size={cStyles.size14} />
                                 </TouchableOpacity>
                                 <View style={styles.viewTextQuantity}
                                 >
@@ -398,7 +405,7 @@ const ProductDetailScreen = () => {
                                     activeOpacity={.7}
                                     onPress={() => { onPressQuantity("add") }}
                                 >
-                                    <IconAdd size={24} />
+                                    <IconAdd size={cStyles.size24} />
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -409,13 +416,14 @@ const ProductDetailScreen = () => {
                         <TouchableOpacity
                             style={styles.buttonLikeInBuy}
                         >
-                            <IconUnLove size={20} />
+                            <IconUnLove size={cStyles.size20} />
                         </TouchableOpacity>
                         <TouchableOpacity
-                            style={{ ...cStyles.center }}
+                            style={styles.buttonAddCartBottom}
                             activeOpacity={.7}
                         >
-                            <ButtonBuyCart size={parseInt(width * 0.768)} />
+                            {/* <ButtonBuyCart size={288} /> */}
+                            <Text style={styles.textBuy}>{"THÊM VÀO GIỎ HÀNG"}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -447,7 +455,7 @@ const ProductDetailScreen = () => {
 
 export default ProductDetailScreen;
 
-const styles = StyleSheet.create({
+const styles = EStyleSheet.create({
     containerImage: {
         width: "100%",
         height: parseInt(1.026 * width),
@@ -485,9 +493,9 @@ const styles = StyleSheet.create({
     buttonFavorite: {
         justifyContent: "center",
         alignItems: "center",
-        width: 32,
-        height: 32,
-        borderRadius: 16,
+        width: "32rem",
+        height: "32rem",
+        borderRadius: "16rem",
         backgroundColor: "#FDCC0B"
     },
     textTitle: {
@@ -496,24 +504,24 @@ const styles = StyleSheet.create({
     },
     containerItemVariant: {
         flexDirection: "row",
-        paddingVertical: 12,
-        paddingBottom:DeviceUtils.isIphoneX() &&  24 || 12
+        paddingVertical: "12rem",
+        paddingBottom:DeviceUtils.isIphoneX() &&  "24rem" || "12rem"
     },
     viewDiscount: {
-        width: 40,
-        height: 24,
+        width: "40rem",
+        height: "24rem",
         backgroundColor: "#FF4141",
-        borderTopLeftRadius: 8,
-        borderTopRightRadius: 1,
-        borderBottomRightRadius: 8,
-        borderBottomLeftRadius: 1,
+        borderTopLeftRadius: "8rem",
+        borderTopRightRadius: "1rem",
+        borderBottomRightRadius: "8rem",
+        borderBottomLeftRadius: "1rem",
         justifyContent: "center",
         alignItems: "center"
     },
     buttonVariant: {
-        paddingHorizontal: 16,
-        paddingVertical: 9,
-        borderWidth: DeviceUtils.isIphoneX() && 1 || 2,
+        paddingHorizontal: "16rem",
+        paddingVertical: "9rem",
+        borderWidth: DeviceUtils.isIphoneX() && "1rem" || "2rem",
     },
     containerViewDiscount: {
         flexDirection: "row",
@@ -531,14 +539,14 @@ const styles = StyleSheet.create({
     textThroughLine: {
         ...cStyles.fontInterRegular_12,
         color: '#9CA1B8',
-        paddingLeft: 8,
-        paddingTop: 4,
+        paddingLeft: "8rem",
+        paddingTop: "4rem",
         textDecorationLine: 'line-through'
     },
     textName: {
         ...cStyles.fontInterRegular_16,
         color: "#3A3F55",
-        paddingVertical: 12
+        paddingVertical: "12rem"
     },
     viewRating: {
         flexDirection: "row",
@@ -550,91 +558,131 @@ const styles = StyleSheet.create({
         height: height / 2,
         backgroundColor: "#fff",
         // paddingBottom: DeviceUtils.isIphoneX() && 12 || 0,
-        paddingBottom: 12,
+        paddingBottom: "12rem",
     },
     viewButtonVariant: {
         width: width,
-        height: 81,
+        height: "81rem",
         backgroundColor: "#F7F6FA",
-        paddingHorizontal: 16,
-        paddingVertical: 12,
+        paddingHorizontal: "16rem",
+        paddingVertical: "12rem",
         justifyContent: "center"
     },
     buttonVariant: {
-        paddingHorizontal: 14,
-        paddingVertical: 19,
+        paddingHorizontal: "14rem",
+        paddingVertical: "19rem",
         backgroundColor: "#fff",
-        borderRadius: 8,
+        borderRadius: "8rem",
         alignItems: "center",
         flexDirection: "row"
     },
     textTitleButtonVariant: {
         ...cStyles.fontInterMedium_14,
         color: "#0F172A",
-        paddingLeft: 12
+        paddingLeft: "12rem"
     },
     buttonCloseModal: {
         justifyContent: "center",
         alignItems: "center",
-        width: 20,
-        height: 20,
+        width: "20rem",
+        height: "20rem",
         backgroundColor: "transparent"
     },
     viewTextHeaderModal: {
         flexDirection: "row",
-        paddingVertical: 12,
-        paddingHorizontal: 16,
+        paddingVertical: "12rem",
+        paddingHorizontal: "16rem",
     },
     viewItemVariant: {
         flex: 1,
-        paddingHorizontal: 16,
-        paddingVertical: 16
+        paddingHorizontal: "16rem",
+        paddingVertical: "16rem"
     },
     buttonAddCart: {
-        width: 56,
-        height: 40,
+        width: "56rem",
+        height: "40rem",
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "#F7F6FA"
     },
     viewTextQuantity: {
-        marginHorizontal: 8,
-        padding: 9,
+        marginHorizontal: "8rem",
+        padding: "9rem",
         justifyContent: "center",
         alignItems: "center",
-        width: 50,
-        height: 40,
+        width: "50rem",
+        height: "40rem",
         borderColor: "#F7F6FA",
-        borderWidth:  DeviceUtils.isIphoneX() && 1 || 2,
+        borderWidth:  DeviceUtils.isIphoneX() && "1rem" || "2rem",
     },
     containerButtonBuy: {
         width: width,
-        height: 86,
+        height: "86rem",
         position: "absolute",
-        bottom: DeviceUtils.isIphoneX() && 12 || -20,
+        bottom: DeviceUtils.isIphoneX() && "12rem" || "0rem",
         left: 0,
-        paddingHorizontal: 16,
+        paddingHorizontal: "16rem",
+        backgroundColor: "#ffff",
 
         shadowColor: "#0F011771",
-
-
-        shadowRadius: 2,
         shadowOffset: {
             width: 0,
             height: -3,
         },
-        elevation: 4,
+        shadowOpacity: 0.08,
+        shadowRadius: 3.84,
+
         flexDirection: "row",
         alignItems: "center"
     },
     buttonLikeInBuy: {
-        width: 43,
-        height: 43,
-        borderRadius: 21.5,
-        marginRight: 10,
-        paddingTop: 3,
+        width: "43rem",
+        height: "43rem",
+        borderRadius: "21,5rem",
+        marginRight: "10rem",
+        paddingTop: "3rem",
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "#EEEDF5"
+    },
+    dot: {
+        width: "4rem", 
+        height: "4rem", 
+        borderRadius: "2rem",
+         backgroundColor: "#6C728B",
+          opacity: .6
+    },
+    textRating1: {
+        ...cStyles.fontInterRegular_12, 
+        color: "#6C728B",
+         paddingLeft: "8rem", 
+         paddingRight: "4rem"
+    },
+    textSold:{
+        ...cStyles.fontInterRegular_12,
+         color: "#6C728B", 
+         paddingLeft: "4rem", 
+         paddingRight: "8rem"
+    },
+    buttonAddCartBottom:{
+        width: "288rem",
+        height:"53rem",
+        marginLeft: "4rem",
+        backgroundColor: "#0F172A",
+        ...cStyles.center,
+    },
+    textBuy: {
+        ...cStyles.fontInterBold_12,
+        color:"#fff"
+    },
+    buttonBack:{
+        ...cStyles.center,
+        width: "33rem",
+        height: "33rem",
+        borderRadius: "16.5rem",
+        backgroundColor:"#fff",
+        position:"absolute",
+        left: "16rem",
+        top:"55rem"
     }
 })
