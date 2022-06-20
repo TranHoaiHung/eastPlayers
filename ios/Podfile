@@ -19,7 +19,6 @@ target 'EastPlayer' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  pod 'react-native-branch', :path => '../node_modules/react-native-branch'
 
   target 'EastPlayerTests' do
     inherit! :complete

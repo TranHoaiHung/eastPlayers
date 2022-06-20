@@ -7,8 +7,8 @@ import { TextMask } from 'react-native-masked-text';
 import Modal from 'react-native-modal';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
-const entireScreenWidth = Dimensions.get('window').width;
-EStyleSheet.build({$rem: entireScreenWidth / 380});
+const { width, height } = Dimensions.get('window');
+EStyleSheet.build({$rem: width / 380});
 
 
 const infoProductTemple = {
@@ -70,7 +70,16 @@ const infoProductTemple = {
 
 }
 
-const { width, height } = Dimensions.get('window');
+const language_vi = {
+    sold: "Đã bán",
+    colorAndSize: "Màu, Kích thước",
+    chooseACategory: "Chọn phân loại",
+    color: "MÀU SẮC",
+    size: "KÍCH THƯỚC",
+    quantity: "SỐ LƯỢNG",
+    addToCart: "THÊM VÀO GIỎ HÀNG",
+}
+
 
 export const ImageDetailProduct = (props) => {
 
@@ -141,7 +150,7 @@ export const Rating = (props) => {
             {
                 data.map((item, index) => {
                     if (index < numberRating) {
-                        return <Star size={cStyles.size14} />
+                        return <Star size={cStyles.size14} key={`start-${index}`}/>
                     }
                     return null
                 })
@@ -186,11 +195,7 @@ export const DetailItemVariant = (props) => {
                             }
                         }
                         return (
-                            <TouchableOpacity style={[ {
-                            
-                                borderWidth: 1,
-                                paddingHorizontal: 16,
-                                paddingVertical: 9,
+                            <TouchableOpacity style={[styles.itemVariant, {
                                 borderColor: item?.isSoldOut && "#D3D3E1" || listVariantChoose.includes(item) && "#0F172A" || "#D3D3E1",
                                 marginLeft: index != 0 && 8 || 0,
 
@@ -198,6 +203,7 @@ export const DetailItemVariant = (props) => {
                                 disabled={item?.isSoldOut}
                                 activeOpacity={.8}
                                 onPress={() => { onPressChoose(item) }}
+                                key={`item-${item?._id}`}
                             >
                                 <Text style={{
                                     opacity: item?.isSoldOut && .4 || 1,
@@ -212,6 +218,8 @@ export const DetailItemVariant = (props) => {
     )
 
 }
+
+// **************** RENDER SCREEN **********************
 
 const ProductDetailScreen = () => {
     // ****************** Init State, props ***********
@@ -297,7 +305,7 @@ const ProductDetailScreen = () => {
                         <Rating numberRating={infoProduct.rating} />
                         <Text style={styles.textRating1}>{`${infoProduct.numberRating}`}</Text>
                         <View style={styles.dot} />
-                        <Text style={styles.textSold}>{` Đã bán ${infoProduct.sold}`}</Text>
+                        <Text style={styles.textSold}>{` ${language_vi.sold} ${infoProduct.sold}`}</Text>
                     </View>
                     <ButtonFavorite isFavorite={infoProduct.isFavorite} style={{
                         // position:"absolute",
@@ -323,7 +331,7 @@ const ProductDetailScreen = () => {
                 <View style={styles.buttonVariant}>
                     <View style={{ flexDirection: "row", alignItems: "center", flex: 1 }}>
                         <IconSizeProduct size={cStyles.size21} />
-                        <Text style={styles.textTitleButtonVariant}>{"Màu, Kích thước"}</Text>
+                        <Text style={styles.textTitleButtonVariant}>{language_vi.colorAndSize}</Text>
                     </View>
                     <IconBackRight size={cStyles.size9} />
                 </View>
@@ -355,7 +363,7 @@ const ProductDetailScreen = () => {
                 <View style={styles.containerModal}>
                     {/*render Header*/}
                     <View style={styles.viewTextHeaderModal}>
-                        <Text style={{ ...cStyles.fontInterBold_16, color: "#0F172A", flex: 1 }}>{"Chọn phân loại"}</Text>
+                        <Text style={{ ...cStyles.fontInterBold_16, color: "#0F172A", flex: 1 }}>{language_vi.chooseACategory}</Text>
                         <TouchableOpacity activeOpacity={.7} onPress={onCloseModal} style={styles.buttonCloseModal}>
                             <IconClose size={cStyles.size11} />
                         </TouchableOpacity>
@@ -364,13 +372,13 @@ const ProductDetailScreen = () => {
                     {/*render Content*/}
                     <View style={styles.viewItemVariant}>
                         <DetailItemVariant
-                            title={"MÀU SẮC"}
+                            title={language_vi.color}
                             dataVariant={infoProduct.color}
                             onPressChoose={onPressChooseColor}
                             listVariantChoose={listChooseColor}
                         />
                         <DetailItemVariant
-                            title={"KÍCH THƯỚC"}
+                            title={language_vi.size}
                             dataVariant={infoProduct.size}
                             onPressChoose={onPressChooseSize}
                             listVariantChoose={listChooseSize}
@@ -379,7 +387,7 @@ const ProductDetailScreen = () => {
                             flexDirection: "row",
                             alignItems: "center"
                         }}>
-                            <Text style={{ ...cStyles.fontInterMedium_12, color: "#0F172A", flex: 1 }}>{"SỐ LƯỢNG"}</Text>
+                            <Text style={{ ...cStyles.fontInterMedium_12, color: "#0F172A", flex: 1 }}>{language_vi.quantity}</Text>
                             <View style={{
                                 flexDirection: "row",
 
@@ -423,7 +431,7 @@ const ProductDetailScreen = () => {
                             activeOpacity={.7}
                         >
                             {/* <ButtonBuyCart size={288} /> */}
-                            <Text style={styles.textBuy}>{"THÊM VÀO GIỎ HÀNG"}</Text>
+                            <Text style={styles.textBuy}>{language_vi.addToCart}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -454,6 +462,9 @@ const ProductDetailScreen = () => {
 }
 
 export default ProductDetailScreen;
+
+
+
 
 const styles = EStyleSheet.create({
     containerImage: {
@@ -684,5 +695,10 @@ const styles = EStyleSheet.create({
         position:"absolute",
         left: "16rem",
         top:"55rem"
+    },
+    itemVariant: {
+        borderWidth: "1rem",
+        paddingHorizontal: "16rem",
+        paddingVertical: "9rem",
     }
 })
